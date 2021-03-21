@@ -15,8 +15,8 @@ import javax.persistence.Table;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
-@Table(name = "field")
-public class Field {
+@Table(name = "data_row")
+public class DataRow {
 
 
     @Id
@@ -25,11 +25,8 @@ public class Field {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "file_id", nullable = false)
-    File file;
-
-    @Column(name = "name", nullable = false)
-    String name;
+    @JoinColumn(name = "column_id", nullable = false)
+    DataColumn column;
 
     @Column(name = "value_txt")
     String valueTxt;
@@ -48,21 +45,12 @@ public class Field {
         this.id = id;
     }
 
-
-    public File getFile() {
-        return file;
+    public DataColumn getColumn() {
+        return column;
     }
 
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setColumn(DataColumn column) {
+        this.column = column;
     }
 
     public String getValueTxt() {

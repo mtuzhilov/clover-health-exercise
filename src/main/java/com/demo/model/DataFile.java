@@ -11,14 +11,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.sql.Date;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
-@Table(name = "file")
-public class File {
+@Table(name = "data_file")
+public class DataFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,14 +29,15 @@ public class File {
     @Column(name = "name", nullable = false)
     String name;
 
-    @Column(name = "date", nullable = false)
-    Date date;
+    @Column(name = "imported_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    Date importedAt;
 
     @OneToMany(
             mappedBy = "file", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
-    private List<Field> fields = new ArrayList<>();
+    private List<DataColumn> columns = new ArrayList<>();
 
 
     public Integer getId() {
@@ -53,19 +56,19 @@ public class File {
         this.name = name;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getImportedAt() {
+        return importedAt;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setImportedAt(Date importedAt) {
+        this.importedAt = importedAt;
     }
 
-    public List<Field> getFields() {
-        return fields;
+    public List<DataColumn> getColumns() {
+        return columns;
     }
 
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
+    public void setColumns(List<DataColumn> columns) {
+        this.columns = columns;
     }
 }

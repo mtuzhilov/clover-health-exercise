@@ -85,26 +85,31 @@ The application supports calling the REST service to import a data file by name.
 file and inserts the data into the H2 database. The data files can then subsequently be queried using the REST service 
 by ID.
 
-**Build**
+### **Database schema design**
+The database is designed so support multiple data files with different type of columns and many rows.
+
+![DB Schema](img/db_design.png?raw=true "DB Design")
+
+### **Build**
 ```
 # build using maven
 > mvn clean install
 ```
 
-**Run**
+### **Run**
 ```
 # run, this will start the server running on port 8080
 > java -jar target/clover-health-demo.jar
 ```
 
-**Import a data file**
+### **Import a data file**
 
 ```
 # POST filename to import the datafile. The application knows how to access the file
 curl -X POST http://localhost:8080/data-file/testformat1_2015-06-28.txt 
 ```
 
-**Get all imported files**
+### **Get all imported files**
 ```
 # Call GET all to retrieve all imported data files
 curl  http://localhost:8080/data-files | json_pp
@@ -182,7 +187,107 @@ Response
    }
 ]
 ```
-**Query the DB by going to H2 Console**
+
+### **Get one file by ID**
+```
+# Call GET by ID to retrieve one imported data file
+curl http://localhost:8080/data-file/1 | json_pp
+```
+
+Response
+```json
+{
+   "id" : 1,
+   "columns" : [
+      {
+         "width" : 10,
+         "rows" : [
+            {
+               "valueTxt" : "Foonyor",
+               "id" : 1
+            },
+            {
+               "id" : 4,
+               "valueTxt" : "Barzane"
+            },
+            {
+               "id" : 7,
+               "valueTxt" : "Quuxitude"
+            }
+         ],
+         "name" : "name",
+         "type" : "TEXT",
+         "id" : 1
+      },
+      {
+         "type" : "BOOLEAN",
+         "id" : 2,
+         "width" : 1,
+         "rows" : [
+            {
+               "id" : 2,
+               "valueBool" : true
+            },
+            {
+               "id" : 5,
+               "valueBool" : false
+            },
+            {
+               "valueBool" : true,
+               "id" : 8
+            }
+         ],
+         "name" : "valid"
+      },
+      {
+         "id" : 3,
+         "type" : "INTEGER",
+         "rows" : [
+            {
+               "valueInt" : 1,
+               "id" : 3
+            },
+            {
+               "id" : 6,
+               "valueInt" : -12
+            },
+            {
+               "valueInt" : 103,
+               "id" : 9
+            }
+         ],
+         "width" : 3,
+         "name" : "count"
+      }
+   ],
+   "name" : "testformat1_2015-06-28.txt",
+   "importedAt" : "2021-03-22T17:23:08.415+0000"
+}
+```
+
+### **Delete one file by ID**
+```
+# Call DELETE by ID to delete one imported data file from DB
+curl -X DELETE http://localhost:8080/data-file?id=1
+```
+
+Response
+```json
+{"Status":"File deleted successfully"}
+```
+
+### **Delete all files**
+```
+# Call DELETE to delete all files from DB
+curl -X DELETE http://localhost:8080/data-files
+```
+
+Response
+```
+SUCCESS
+```
+
+### **Query the DB by going to H2 Console**
 Navigate in your browser to http://localhost:8080/h2-console
 
 ![H2 Console](img/h2-console.png?raw=true "H2 Console")
